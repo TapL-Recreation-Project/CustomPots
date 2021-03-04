@@ -1,0 +1,9 @@
+name: CustomPots
+version: ${project.version}
+main: me.swipez.custompots.CustomPots
+api-version: 1.16
+authors: [ notnotnotswipez ]
+commands:
+  giveallpots:
+    usage: /giveallpots
+    description: Gives you all the potions in the TapL Custom Pots plugin
