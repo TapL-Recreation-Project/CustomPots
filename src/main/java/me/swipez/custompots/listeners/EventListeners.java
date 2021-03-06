@@ -137,6 +137,7 @@ public class EventListeners implements Listener {
         plugin.hasRandomizer.put(uuid, false);
         plugin.hasCollections.put(uuid, false);
         plugin.hasCloning.put(uuid, false);
+        e.getPlayer().setAllowFlight(false);
 
         // Integers
         plugin.timeCreative.put(uuid, 0);

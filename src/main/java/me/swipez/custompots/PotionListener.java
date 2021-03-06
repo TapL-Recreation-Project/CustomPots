@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -74,23 +75,28 @@ public class PotionListener implements Listener {
         }
         if (e.getItem().isSimilar(PotionManager.POT_ENCHANTMENTS)){
             Inventory inventory = player.getInventory();
-            for (int i=0;i<inventory.getSize();i++){
-                for (int j=0;j<100;j++){
-                    if (inventory.getItem(i) != null){
-                        ItemStack itemStack = inventory.getItem(i);
-                        Map<Enchantment, Integer> list = itemStack.getEnchantments();
-                        Enchantment randEnchant = Enchantment.values()[(int) (Math.random()*Enchantment.values().length)];
-                        if (randEnchant.canEnchantItem(itemStack)){
-                            if (itemStack.containsEnchantment(randEnchant)){
-                                int value = list.get(randEnchant)+1;
-                                itemStack.addEnchantment(randEnchant, value);
-                            }
-                            else {
-                                int value = 1;
-                                itemStack.addEnchantment(randEnchant, value);
-                            }
+            int timesenchanted = 0;
+            for (int i=0;i<inventory.getSize();i++) {
+                if (i > inventory.getSize() - 2 && timesenchanted < 100) {
+                    i = 0;
+                }
+                if (inventory.getItem(i) != null) {
+                    ItemStack itemStack = inventory.getItem(i);
+                    ItemMeta meta = itemStack.getItemMeta();
+                    Map<Enchantment, Integer> list = itemStack.getEnchantments();
+                    Enchantment randEnchant = Enchantment.values()[(int) (Math.random() * Enchantment.values().length)];
+                    if (randEnchant.canEnchantItem(itemStack)) {
+                        if (itemStack.containsEnchantment(randEnchant)) {
+                            int value = list.get(randEnchant) + 1;
+                            meta.addEnchant(randEnchant, value, true);
+                            timesenchanted++;
+                        } else {
+                            int value = 1;
+                            meta.addEnchant(randEnchant, value, true);
+                            timesenchanted++;
                         }
                     }
+                    itemStack.setItemMeta(meta);
                 }
             }
         }
@@ -119,6 +125,7 @@ public class PotionListener implements Listener {
             plugin.hasRandomizer.put(uuid, false);
             plugin.hasCollections.put(uuid, false);
             plugin.hasCloning.put(uuid, false);
+            e.getPlayer().setAllowFlight(false);
 
             // Integers
             plugin.timeCreative.put(uuid, 0);
